@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <h1>Admin Dashboard</h1>
+  <p>Welcome, {{ session.username }}!</p>
+  
+  <!-- Display flash messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul>
+        {% for category, message in messages %}
+          <li class="{{ category }}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+  
+  <!-- Success message container -->
+  <div id="success-message" class="success" style="display: none;"></div>
+  
+  <h2>Pending Credit Requests</h2>
+  <ul id="requests-list">
+    {% for req in requests %}
+      <li data-request-id="{{ req.id }}">
+        {{ req.username }} - {{ req.credits_requested }} credits ({{ req.request_date }})
+        <form class="approve-form" action="/admin/approve/{{ req.id }}" method="POST" style="display:inline;">
+          <button type="submit">Approve</button>
+        </form>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <script>
+    document.querySelectorAll('.approve-form').forEach(form => {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const requestId = form.parentElement.getAttribute('data-request-id');
+        const res = await fetch(`/admin/approve/${requestId}`, {
+          method: 'POST',
+          headers: {
+            'Accept': 'application/json'
+          }
+        });
+        const data = await res.json();
+        
+        // Display success message
+        const successMessage = document.getElementById('success-message');
+        successMessage.textContent = data.message;
+        successMessage.style.display = 'block';
+        
+        // Remove the approved request from the list
+        form.parentElement.remove();
+        
+        // Hide success message after 3 seconds
+        setTimeout(() => {
+          successMessage.style.display = 'none';
+        }, 3000);
+      });
+    });
+  </script>
+</body>
+</html>

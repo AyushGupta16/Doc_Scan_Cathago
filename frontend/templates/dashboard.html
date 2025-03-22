@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Document Scanner</h1>
+      <p>Welcome, {{ session.username }}!</p>
+      <p>Credits: <span id="credits">{{ credits }}</span></p>
+    </header>
+    <main>
+      <section class="card">
+        <h2>Scan Document</h2>
+        <form id="scanForm" enctype="multipart/form-data" class="form">
+          <input type="file" name="file" accept=".txt" required>
+          <button type="submit" class="btn">Scan</button>
+        </form>
+      </section>
+      <section class="card">
+        <h2>Request Credits</h2>
+        <form id="creditForm" class="form">
+          <input type="number" name="credits" min="1" placeholder="Credits" required>
+          <button type="submit" class="btn">Request</button>
+        </form>
+      </section>
+    </main>
+  </div>
+  <script>
+    document.getElementById('scanForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const res = await fetch('/scan', { method: 'POST', body: formData });
+      const data = await res.json();
+      alert(data.message);
+      if (data.message === 'Document scanned successfully') {
+        location.reload(); // Refresh to update credits
+      }
+    });
+
+    document.getElementById('creditForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const res = await fetch('/credits/request', { method: 'POST', body: formData });
+      const data = await res.json();
+      alert(data.message);
+    });
+  </script>
+</body>
+</html>

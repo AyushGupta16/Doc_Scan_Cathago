@@ -1,0 +1,17 @@
+body { font-family: Arial, sans-serif; margin: 20px; }
+form { margin: 10px 0; }
+input, button { padding: 5px; margin: 5px; }
+.success { 
+  color: green; 
+  background-color: #e0ffe0; 
+  padding: 10px; 
+  border-radius: 5px; 
+  margin-bottom: 10px;
+}
+.error { 
+  color: red; 
+  background-color: #ffe0e0; 
+  padding: 10px; 
+  border-radius: 5px; 
+  margin-bottom: 10px;
+}

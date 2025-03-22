@@ -1,0 +1,8 @@
+the decodder takesthe encoded data and reconstructs the data back to its form.
+the goal of the decoder is to decode as closely as the reduced latent state
+-applications of autoencoders
+dimensionality reduction: autoencoders can be used for reducing the dimesionality of data similar ro PCA
+image denoising
+anomaly reduction
+What is the need of autoencoders?
+Autoencoders are the vital tool for the efficient training of model as it reduces the datasets to their lowest latent space 
