@@ -2,26 +2,33 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>DocScan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document Scanner - Login/Register</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <h1>DocScan</h1>
-  <div>
-    <h2>Register</h2>
-    <form id="registerForm" method="POST" action="/auth/register">
-      <input type="text" name="username" placeholder="Username" required>
-      <input type="password" name="password" placeholder="Password" required>
-      <button type="submit">Register</button>
-    </form>
-  </div>
-  <div>
-    <h2>Login</h2>
-    <form id="loginForm" method="POST" action="/auth/login">
-      <input type="text" name="username" placeholder="Username" required>
-      <input type="password" name="password" placeholder="Password" required>
-      <button type="submit">Login</button>
-    </form>
+  <div class="container">
+    <header>
+      <h1>Document Scanner</h1>
+    </header>
+    <main class="auth-container">
+      <section class="auth-card">
+        <h2>Register</h2>
+        <form id="registerForm" method="POST" action="/auth/register" class="auth-form">
+          <input type="text" name="username" placeholder="Username" required>
+          <input type="password" name="password" placeholder="Password" required>
+          <button type="submit" class="btn">Register</button>
+        </form>
+      </section>
+      <section class="auth-card">
+        <h2>Login</h2>
+        <form id="loginForm" method="POST" action="/auth/login" class="auth-form">
+          <input type="text" name="username" placeholder="Username" required>
+          <input type="password" name="password" placeholder="Password" required>
+          <button type="submit" class="btn">Login</button>
+        </form>
+      </section>
+    </main>
   </div>
   <script>
     document.getElementById('registerForm').addEventListener('submit', async (e) => {

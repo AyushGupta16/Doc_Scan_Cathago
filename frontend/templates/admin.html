@@ -2,39 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-  <h1>Admin Dashboard</h1>
-  <p>Welcome, {{ session.username }}!</p>
-  
-  <!-- Display flash messages -->
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      <ul>
-        {% for category, message in messages %}
-          <li class="{{ category }}">{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-  {% endwith %}
-  
-  <!-- Success message container -->
-  <div id="success-message" class="success" style="display: none;"></div>
-  
-  <h2>Pending Credit Requests</h2>
-  <ul id="requests-list">
-    {% for req in requests %}
-      <li data-request-id="{{ req.id }}">
-        {{ req.username }} - {{ req.credits_requested }} credits ({{ req.request_date }})
-        <form class="approve-form" action="/admin/approve/{{ req.id }}" method="POST" style="display:inline;">
-          <button type="submit">Approve</button>
-        </form>
-      </li>
-    {% endfor %}
-  </ul>
-
+  <div class="container">
+    <header>
+      <h1>Document Scanner</h1>
+      <p>Welcome, {{ session.username }}!</p>
+    </header>
+    <main>
+      <section class="card">
+        <!-- Display flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <div class="messages">
+              {% for category, message in messages %}
+                <div class="alert {{ category }}">{{ message }}</div>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endwith %}
+        
+        <!-- Success message container -->
+        <div id="success-message" class="alert success" style="display: none;"></div>
+        
+        <h2>Pending Credit Requests</h2>
+        <ul id="requests-list" class="request-list">
+          {% for req in requests %}
+            <li data-request-id="{{ req.id }}" class="request-item">
+              <span>{{ req.username }} - {{ req.credits_requested }} credits ({{ req.request_date }})</span>
+              <form class="approve-form" action="/admin/approve/{{ req.id }}" method="POST" style="display:inline;">
+                <button type="submit" class="btn">Approve</button>
+              </form>
+            </li>
+          {% endfor %}
+        </ul>
+      </section>
+    </main>
+  </div>
   <script>
     document.querySelectorAll('.approve-form').forEach(form => {
       form.addEventListener('submit', async (e) => {
