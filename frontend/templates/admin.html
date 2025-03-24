@@ -9,11 +9,13 @@
 <body>
   <div class="container">
     <header>
-      <h1>Document Scanner</h1>
-      <p>Welcome, {{ session.username }}!</p>
+      <h1 class="title">Document Scanner</h1>
     </header>
-    <main>
-      <section class="card">
+    <p class="welcome">Welcome, {{ session.username }}!
+      <br> Here you can approve credit requests.
+    </p>
+    <div class="dashboard-wrapper">
+      <div class="card">
         <!-- Display flash messages -->
         {% with messages = get_flashed_messages(with_categories=true) %}
           {% if messages %}
@@ -39,8 +41,8 @@
             </li>
           {% endfor %}
         </ul>
-      </section>
-    </main>
+      </div>
+    </div>
   </div>
   <script>
     document.querySelectorAll('.approve-form').forEach(form => {

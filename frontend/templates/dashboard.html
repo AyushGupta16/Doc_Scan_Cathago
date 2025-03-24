@@ -9,26 +9,26 @@
 <body>
   <div class="container">
     <header>
-      <h1>Document Scanner</h1>
-      <p>Welcome, {{ session.username }}!</p>
-      <p>Credits: <span id="credits">{{ credits }}</span></p>
+      <h1 class="title">Document Scanner</h1>
+      <p class="welcome">Welcome, {{ session.username }}!</p>
+      <p class="credits">Credits: <span id="credits">{{ credits }}</span></p>
     </header>
-    <main>
-      <section class="card">
+    <div class="dashboard-wrapper">
+      <div class="card">
         <h2>Scan Document</h2>
         <form id="scanForm" enctype="multipart/form-data" class="form">
           <input type="file" name="file" accept=".txt" required>
           <button type="submit" class="btn">Scan</button>
         </form>
-      </section>
-      <section class="card">
+      </div>
+      <div class="card">
         <h2>Request Credits</h2>
         <form id="creditForm" class="form">
           <input type="number" name="credits" min="1" placeholder="Credits" required>
           <button type="submit" class="btn">Request</button>
         </form>
-      </section>
-    </main>
+      </div>
+    </div>
   </div>
   <script>
     document.getElementById('scanForm').addEventListener('submit', async (e) => {
@@ -38,7 +38,7 @@
       const data = await res.json();
       alert(data.message);
       if (data.message === 'Document scanned successfully') {
-        location.reload(); // Refresh to update credits
+        location.reload();
       }
     });
 
