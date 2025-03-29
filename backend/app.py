@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template, redirect, url_for, session, flash  # Add flash
+from flask import Flask, request, jsonify, render_template, redirect, url_for, session, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import sqlite3
@@ -61,6 +61,25 @@ def reset_credits_if_needed(user_id):
     if user['last_reset'] != today:
         db.execute('UPDATE users SET credits = 20, last_reset = ? WHERE id = ?', (today, user_id))
         db.commit()
+
+# Levenshtein Distance Function
+def levenshtein_distance(s1, s2):
+    if len(s1) < len(s2):
+        return levenshtein_distance(s2, s1)
+    if len(s2) == 0:
+        return len(s1)
+
+    previous_row = range(len(s2) + 1)
+    for i, c1 in enumerate(s1):
+        current_row = [i + 1]
+        for j, c2 in enumerate(s2):
+            insertions = previous_row[j + 1] + 1
+            deletions = current_row[j] + 1
+            substitutions = previous_row[j] + (c1 != c2)
+            current_row.append(min(insertions, deletions, substitutions))
+        previous_row = current_row
+
+    return previous_row[-1]
 
 # Routes
 @app.route('/')
@@ -192,6 +211,25 @@ def approve_credit(request_id):
         return jsonify({'message': 'Request not found'}), 404
     flash('Request not found.', 'error')
     return redirect(url_for('admin'))
+
+@app.route('/match/<int:doc_id>', methods=['GET'])
+def match_document(doc_id):
+    if 'user_id' not in session:
+        return jsonify({'message': 'Unauthorized'}), 401
+    db = get_db()
+    target_doc = db.execute('SELECT content FROM documents WHERE id = ?', (doc_id,)).fetchone()
+    if not target_doc:
+        return jsonify({'message': 'Document not found'}), 404
+    
+    all_docs = db.execute('SELECT id, content FROM documents WHERE id != ?', (doc_id,)).fetchall()
+    matches = []
+    for doc in all_docs:
+        distance = levenshtein_distance(target_doc['content'], doc['content'])
+        similarity = 1 - (distance / max(len(target_doc['content']), len(doc['content']))) if max(len(target_doc['content']), len(doc['content'])) > 0 else 0
+        matches.append({'id': doc['id'], 'similarity': similarity * 100})
+    
+    matches.sort(key=lambda x: x['similarity'], reverse=True)
+    return jsonify({'matches': matches[:5]})  # Return top 5 matches
 
 if __name__ == '__main__':
     init_db()
